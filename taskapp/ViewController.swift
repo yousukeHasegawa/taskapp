@@ -29,7 +29,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.delegate = self
         tableView.dataSource = self
         
-        resultText.text = "カテゴリ：すべて"
+        resultText.text = "カテゴリ：すべて　件数：\(taskArray.count)件"
     }
 
     // データの数を返すメソッド
@@ -115,7 +115,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             super.viewWillAppear(animated)
 
             taskArray = realm.objects(Task.self).sorted(byKeyPath: "date", ascending: true)
-            resultText.text = "カテゴリ：すべて"
+            resultText.text = "カテゴリ：すべて　件数：\(taskArray.count)件"
             tableView.reloadData()
     
     }
@@ -162,24 +162,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
        
         switch a{
         case 1:
-                resultText.text = "カテゴリ：仕事"
                 taskArray = realm.objects(Task.self).filter("category == '仕事'").sorted(byKeyPath: "date", ascending: true)
+                resultText.text = "カテゴリ：仕事　件数：\(taskArray.count)件"
                 tableView.reloadData()
         case 2:
-                resultText.text = "カテゴリ：家庭"
                 taskArray = realm.objects(Task.self).filter("category == '家庭'").sorted(byKeyPath: "date", ascending: true)
+                resultText.text = "カテゴリ：家庭　件数：\(taskArray.count)件"
                 tableView.reloadData()
         case 3:
-                resultText.text = "カテゴリ：遊び"
                 taskArray = realm.objects(Task.self).filter("category == '遊び'").sorted(byKeyPath: "date", ascending: true)
+                resultText.text = "カテゴリ：遊び　件数：\(taskArray.count)件"
                 tableView.reloadData()
+
         case 4:
-                resultText.text = "カテゴリ：その他"
                 taskArray = realm.objects(Task.self).filter("category == 'その他'").sorted(byKeyPath: "date", ascending: true)
+                resultText.text = "カテゴリ：その他　件数：\(taskArray.count)件"
                 tableView.reloadData()
         default:
-                resultText.text = "カテゴリ：すべて"
                 taskArray = realm.objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+                resultText.text = "カテゴリ：すべて　件数：\(taskArray.count)件"
                 tableView.reloadData()
         }
     }
