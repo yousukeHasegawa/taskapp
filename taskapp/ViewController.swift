@@ -8,8 +8,7 @@
 import UIKit
 import RealmSwift
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -18,12 +17,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Db内のタスクが格納されるリスト
     var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
     
+    //どのカテゴリが選ばれているかを示す
+    var tapped: Int = 0
+    
+    // 件数を示す
+    @IBOutlet weak var resultText: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         tableView.delegate = self
         tableView.dataSource = self
+        
+        resultText.text = "カテゴリ：すべて"
     }
 
     // データの数を返すメソッド
@@ -41,9 +47,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.textLabel?.text = task.title
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        formatter.dateFormat = "YYYY-MM-dd HH:mm"
         
-        let dateString:String = formatter.string(from: task.date)
+        let dateString:String = "日時:\(formatter.string(from: task.date)) カテゴリ：\(task.category)"
         cell.detailTextLabel?.text = dateString
         
         return cell
@@ -107,10 +113,76 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewWillAppear(_ animated: Bool){
             super.viewWillAppear(animated)
+
+            taskArray = realm.objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+            resultText.text = "カテゴリ：すべて"
             tableView.reloadData()
+    
+    }
+    
+    //以下、検索の絞り込み
+    
+    @IBAction func workTapped(_ sender: Any) {
+        if tapped == 1 {
+        tapped = 0
+        }else{
+        tapped = 1
+        }
+        setFilter(tapped: tapped)
+    }
+    @IBAction func familyTapped(_ sender: Any) {
+        if tapped == 2 {
+        tapped = 0
+        }else{
+        tapped = 2
+        }
+        setFilter(tapped: tapped)
+    }
+    @IBAction func joyTapped(_ sender: Any) {
+        if tapped == 3 {
+        tapped = 0
+        }else{
+        tapped = 3
+        }
+        setFilter(tapped: tapped)
+    }
+    @IBAction func othersTapped(_ sender: Any) {
+        if tapped == 4 {
+        tapped = 0
+        }else{
+        tapped = 4
+        }
+        setFilter(tapped: tapped)
     }
     
     
+    func setFilter(tapped a: Int){
+        
+        //検索フィルターをかけた時の動作
+       
+        switch a{
+        case 1:
+                resultText.text = "カテゴリ：仕事"
+                taskArray = realm.objects(Task.self).filter("category == '仕事'").sorted(byKeyPath: "date", ascending: true)
+                tableView.reloadData()
+        case 2:
+                resultText.text = "カテゴリ：家庭"
+                taskArray = realm.objects(Task.self).filter("category == '家庭'").sorted(byKeyPath: "date", ascending: true)
+                tableView.reloadData()
+        case 3:
+                resultText.text = "カテゴリ：遊び"
+                taskArray = realm.objects(Task.self).filter("category == '遊び'").sorted(byKeyPath: "date", ascending: true)
+                tableView.reloadData()
+        case 4:
+                resultText.text = "カテゴリ：その他"
+                taskArray = realm.objects(Task.self).filter("category == 'その他'").sorted(byKeyPath: "date", ascending: true)
+                tableView.reloadData()
+        default:
+                resultText.text = "カテゴリ：すべて"
+                taskArray = realm.objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+                tableView.reloadData()
+        }
+    }
 }
 
 
