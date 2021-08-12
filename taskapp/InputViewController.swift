@@ -9,23 +9,17 @@ import UIKit
 import RealmSwift
 
 
-class InputViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
-    
-
+class InputViewController: UIViewController {
 
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var contentsTextView: UITextView!
     @IBOutlet weak var datePicker: UIDatePicker!
-    @IBOutlet weak var categoryPicker: UIPickerView!
+    @IBOutlet weak var categoryTextView: UITextField!
     
     let realm = try! Realm()
     var task: Task!
     
     //カテゴリのリストを挿入
-    let categoryList = ["仕事", "家庭", "遊び", "その他"]
-
-    //PickerViewで表示されているもの
-    var categoryText: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,30 +31,9 @@ class InputViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         titleTextField.text = task.title
         contentsTextView.text = task.contents
         datePicker.date = task.date
-        
-        categoryPicker.delegate = self
-        categoryPicker.dataSource = self
-        categoryText = categoryList[1]
+        categoryTextView.text = task.category
     }
-    //PickerViewの列の数
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    //Pickerviewの行の数
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return categoryList.count
-    }
-    
-    //PickerViewの最初の表示
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int,forComponent component: Int) ->String? {
-        return categoryList[row]
-    }
-    
-    //UIPickerViewのRowが選択されたとき
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int){
-        categoryText = categoryList[row]
-    }
+
     @objc func dismissKeyboard(){
         //キーボードを閉じる
         view.endEditing(true)
@@ -71,7 +44,7 @@ class InputViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
             self.task.title = self.titleTextField.text!
             self.task.contents = self.contentsTextView.text
             self.task.date = self.datePicker.date
-            self.task.category = categoryText
+            self.task.category = self.categoryTextView.text!
             self.realm.add(self.task, update: .modified)
         }
      

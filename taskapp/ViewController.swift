@@ -11,6 +11,7 @@ import RealmSwift
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var categoryTextView: UITextField!
     
     let realm = try! Realm()
     
@@ -19,6 +20,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //どのカテゴリが選ばれているかを示す
     var tapped: Int = 0
+    
+    var categoryText: String!
     
     // 件数を示す
     @IBOutlet weak var resultText: UILabel!
@@ -122,68 +125,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //以下、検索の絞り込み
     
-    @IBAction func workTapped(_ sender: Any) {
-        if tapped == 1 {
-        tapped = 0
-        }else{
-        tapped = 1
-        }
-        setFilter(tapped: tapped)
-    }
-    @IBAction func familyTapped(_ sender: Any) {
-        if tapped == 2 {
-        tapped = 0
-        }else{
-        tapped = 2
-        }
-        setFilter(tapped: tapped)
-    }
-    @IBAction func joyTapped(_ sender: Any) {
-        if tapped == 3 {
-        tapped = 0
-        }else{
-        tapped = 3
-        }
-        setFilter(tapped: tapped)
-    }
-    @IBAction func othersTapped(_ sender: Any) {
-        if tapped == 4 {
-        tapped = 0
-        }else{
-        tapped = 4
-        }
-        setFilter(tapped: tapped)
-    }
-    
-    
-    func setFilter(tapped a: Int){
-        
-        //検索フィルターをかけた時の動作
-       
-        switch a{
-        case 1:
-                taskArray = realm.objects(Task.self).filter("category == '仕事'").sorted(byKeyPath: "date", ascending: true)
-                resultText.text = "カテゴリ：仕事　件数：\(taskArray.count)件"
-                tableView.reloadData()
-        case 2:
-                taskArray = realm.objects(Task.self).filter("category == '家庭'").sorted(byKeyPath: "date", ascending: true)
-                resultText.text = "カテゴリ：家庭　件数：\(taskArray.count)件"
-                tableView.reloadData()
-        case 3:
-                taskArray = realm.objects(Task.self).filter("category == '遊び'").sorted(byKeyPath: "date", ascending: true)
-                resultText.text = "カテゴリ：遊び　件数：\(taskArray.count)件"
-                tableView.reloadData()
+    @IBAction func categoryViewChanged(_ sender: Any) {
 
-        case 4:
-                taskArray = realm.objects(Task.self).filter("category == 'その他'").sorted(byKeyPath: "date", ascending: true)
-                resultText.text = "カテゴリ：その他　件数：\(taskArray.count)件"
-                tableView.reloadData()
-        default:
-                taskArray = realm.objects(Task.self).sorted(byKeyPath: "date", ascending: true)
-                resultText.text = "カテゴリ：すべて　件数：\(taskArray.count)件"
-                tableView.reloadData()
+        if categoryTextView.text != ""{
+            taskArray = realm.objects(Task.self).filter("category == '\(categoryTextView.text ?? "")'").sorted(byKeyPath: "date", ascending: true)
+            resultText.text = "カテゴリ：\(categoryTextView.text ?? "すべて")　件数：\(taskArray.count)件"
+        }else{
+            taskArray = realm.objects(Task.self).sorted(byKeyPath: "date", ascending: true)
+            resultText.text = "カテゴリ：すべて　件数：\(taskArray.count)件"
         }
+
+        tableView.reloadData()
     }
+
+
 }
 
 
